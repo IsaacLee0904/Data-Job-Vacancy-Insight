@@ -1,1 +1,0 @@
-gunicorn dashboard_index:server
