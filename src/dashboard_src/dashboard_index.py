@@ -1,8 +1,8 @@
 import os
 from dash import dcc, html
 from dash.dependencies import Input, Output
-from dashboard_app import app
-from pages import home_pages, education_pages, geography_pages, stack_pages
+from .dashboard_app import app
+from .pages import home_pages, education_pages, geography_pages, stack_pages
 
 server = app.server
 
