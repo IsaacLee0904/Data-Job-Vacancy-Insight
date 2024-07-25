@@ -3,6 +3,8 @@ from dash.dependencies import Input, Output
 from dashboard_app import app
 from pages import home_pages, education_pages, geography_pages, stack_pages
 
+server = app.server
+
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content')
@@ -20,5 +22,7 @@ def display_page(pathname):
     else:
         return home_pages.layout
 
+
 if __name__ == '__main__':
-    app.run_server(debug=True, host='0.0.0.0', port=9100)
+    port = int(os.environ.get('PORT', 9100))
+    app.run_server(debug=False, host='0.0.0.0', port=port)
