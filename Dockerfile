@@ -29,4 +29,4 @@ EXPOSE 8080
 ENV NAME JobVacancyInsight
 
 # Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:9100", "dashboard_src.dashboard_index:server"]
+CMD ["gunicorn", "--bind", "0.0.0.0:9100", "src.dashboard_src.dashboard_index:server"]
