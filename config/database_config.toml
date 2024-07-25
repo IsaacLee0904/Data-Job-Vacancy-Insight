@@ -12,3 +12,10 @@ user = "IsaacLee"
 password = "job_vacancy_insight"
 host = "datamart"
 port = 5433
+
+[render_deploy]
+db = 'reporting_db_nl8p'
+user = 'reporting_db_nl8p_user'
+password = '06sd58IX0nDIZNLDiNETjbzAdY45Qgu9'
+host = 'dpg-cqh03plds78s73asnebg-a.singapore-postgres.render.com'
+port = 5432
