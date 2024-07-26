@@ -287,7 +287,7 @@ class RenderTablesCreator:
                 closed_openings_count INT,
                 new_openings_count INT,
                 fill_rate FLOAT,
-                crawl_date DATE PRIMARY KEY
+                crawl_date VARCHAR(255) PRIMARY KEY
             );
         """
         # Execute the SQL query to create the table.
@@ -310,7 +310,7 @@ class RenderTablesCreator:
         rpt_job_fill_time_statistics_query = f"""
             CREATE TABLE IF NOT EXISTS {schema_name}.rpt_job_fill_time_statistics (
                 average_weeks_to_fill FLOAT,
-                "current_date" DATE PRIMARY KEY
+                "current_date" VARCHAR(255) PRIMARY KEY
             );
         """
         # Execute the SQL query to create the table.
@@ -334,7 +334,7 @@ class RenderTablesCreator:
             CREATE TABLE IF NOT EXISTS {schema_name}.rpt_data_role_vacancy_trends (
                 data_role VARCHAR(255),
                 count INT,
-                crawl_date DATE,
+                crawl_date VARCHAR(255),
                 PRIMARY KEY (data_role, crawl_date)
             );
         """
@@ -361,7 +361,7 @@ class RenderTablesCreator:
                 category VARCHAR(255),
                 tool_name VARCHAR(255),
                 tool_count INT,
-                crawl_date DATE,
+                crawl_date VARCHAR(255),
                 PRIMARY KEY (tool_name, crawl_date)
             );
         """
@@ -387,7 +387,7 @@ class RenderTablesCreator:
                 rank INT,
                 company_name VARCHAR(255),
                 opening_count INT,
-                crawl_date DATE,
+                crawl_date VARCHAR(255),
                 PRIMARY KEY (company_name, crawl_date)
             );
         """
@@ -413,7 +413,7 @@ class RenderTablesCreator:
                 county_name_eng VARCHAR(255),
                 district_name_eng VARCHAR(255),
                 openings_count INT,
-                crawl_date DATE
+                crawl_date VARCHAR(255)
             );
         """
         # Execute the SQL query to create the table.
@@ -439,7 +439,7 @@ class RenderTablesCreator:
                 category VARCHAR(255),
                 tool_name VARCHAR(255),
                 count INT,
-                crawl_date DATE
+                crawl_date VARCHAR(255)
             );
         """
         # Execute the SQL query to create the table.
@@ -464,7 +464,7 @@ class RenderTablesCreator:
                 data_role VARCHAR(255),
                 degree VARCHAR(255),
                 count INT,
-                crawl_date DATE,
+                crawl_date VARCHAR(255),
                 PRIMARY KEY (data_role, degree, crawl_date)
             );
         """
