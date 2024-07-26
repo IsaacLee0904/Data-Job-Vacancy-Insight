@@ -114,6 +114,33 @@ class DatabaseOperation:
             self.logger.error(f"Error upserting data into {table_name}: {e}")
             self.connection.rollback()
 
+    def insert_overwrite_data(self, table_name, df):
+        """
+        Clear the table before inserting data from a pandas DataFrame into the specified table.
+        This operation will overwrite all existing records in the table.
+
+        Parameters:
+        - table_name (str): The name of the table where data will be inserted.
+        - df (pd.DataFrame): The DataFrame containing the data to be inserted.
+        """
+        # Properly quote column names to handle any special characters or reserved words
+        cols = ','.join([f'"{col}"' for col in df.columns])
+        values = ','.join(['%s'] * len(df.columns))  # Placeholder for values to be inserted
+        delete_stmt = f"DELETE FROM {table_name};"  # SQL statement to clear the table
+        insert_stmt = f"INSERT INTO {table_name} ({cols}) VALUES ({values});"  # SQL statement to insert data
+        
+        try:
+            # First, clear the table
+            self.cursor.execute(delete_stmt)
+            # Then, insert new data
+            records = [tuple(x) for x in df.to_numpy()]  # Convert DataFrame rows to tuples
+            psycopg2.extras.execute_batch(self.cursor, insert_stmt, records)  # Execute insert operation in batch
+            self.connection.commit()  # Commit all changes to the database
+            self.logger.info(f"Table '{table_name}' has been successfully updated.")
+        except Exception as e:
+            self.logger.error(f"Error updating table '{table_name}': {e}")
+            self.connection.rollback()  # Rollback in case of any error
+
     def fetch_data(self, table_name, condition=None):
         """
         Fetch data from the specified table with an optional condition and return it as a pandas DataFrame.
@@ -238,3 +265,257 @@ def create_stagedata_table(logger):
 
     # Close the database connection.
     connection.close()
+
+class RenderTablesCreator:
+    def create_render_rpt_job_openings_metrics_table(db_operation):
+        """
+        Create a specified schema and a table within that schema in the 'datawarehouse' database.
+
+        This function first establishes a connection to the 'datawarehouse' database, then creates a 
+        schema named 'reporting_data'. After the schema is successfully created, it creates a 
+        'rpt_job_openings_metrics' table within this schema if it does not already exist.
+
+        Parameters:
+        - logger (logging.Logger): A Logger object for logging information and errors.
+        """
+        schema_name = "reporting_data"
+
+        # Create the 'rpt_job_openings_metrics' table within the newly created schema.
+        rpt_job_openings_metrics_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.rpt_job_openings_metrics (
+                total_openings INT,
+                closed_openings_count INT,
+                new_openings_count INT,
+                fill_rate FLOAT,
+                crawl_date DATE PRIMARY KEY
+            );
+        """
+        # Execute the SQL query to create the table.
+        db_operation.create_table(rpt_job_openings_metrics_query)
+
+    def create_render_rpt_job_fill_time_statistics_table(db_operation):
+        """
+        Create a specified schema and a table within that schema in the 'datawarehouse' database.
+
+        This function first establishes a connection to the 'datawarehouse' database, then creates a 
+        schema named 'reporting_data'. After the schema is successfully created, it creates a 
+        'rpt_job_fill_time_statistics' table within this schema if it does not already exist.
+
+        Parameters:
+        - logger (logging.Logger): A Logger object for logging information and errors.
+        """
+        schema_name = "reporting_data"
+
+        # Create the 'rpt_job_fill_time_statistics' table within the newly created schema.
+        rpt_job_fill_time_statistics_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.rpt_job_fill_time_statistics (
+                average_weeks_to_fill FLOAT,
+                "current_date" DATE PRIMARY KEY
+            );
+        """
+        # Execute the SQL query to create the table.
+        db_operation.create_table(rpt_job_fill_time_statistics_query)
+
+    def create_render_rpt_data_role_vacancy_trends_table(db_operation):
+        """
+        Create a specified schema and a table within that schema in the 'datawarehouse' database.
+
+        This function first establishes a connection to the 'datawarehouse' database, then creates a 
+        schema named 'reporting_data'. After the schema is successfully created, it creates a 
+        'rpt_data_role_vacancy_trends' table within this schema if it does not already exist.
+
+        Parameters:
+        - logger (logging.Logger): A Logger object for logging information and errors.
+        """
+        schema_name = "reporting_data"
+
+        # Create the 'rpt_data_role_vacancy_trends' table within the newly created schema.
+        rpt_data_role_vacancy_trends_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.rpt_data_role_vacancy_trends (
+                data_role VARCHAR(255),
+                count INT,
+                crawl_date DATE,
+                PRIMARY KEY (data_role, crawl_date)
+            );
+        """
+        # Execute the SQL query to create the table.
+        db_operation.create_table(rpt_data_role_vacancy_trends_query)
+
+    def create_render_rpt_data_tools_trends_table(db_operation):
+        """
+        Create a specified schema and a table within that schema in the 'datawarehouse' database.
+
+        This function first establishes a connection to the 'datawarehouse' database, then creates a 
+        schema named 'reporting_data'. After the schema is successfully created, it creates a 
+        'rpt_data_tools_trends' table within this schema if it does not already exist.
+
+        Parameters:
+        - logger (logging.Logger): A Logger object for logging information and errors.
+        """
+        schema_name = "reporting_data"
+
+        # Create the 'rpt_data_tools_trends' table within the newly created schema.
+        rpt_data_tools_trends_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.rpt_data_tools_trends (
+                rank INT,
+                category VARCHAR(255),
+                tool_name VARCHAR(255),
+                tool_count INT,
+                crawl_date DATE,
+                PRIMARY KEY (tool_name, crawl_date)
+            );
+        """
+        # Execute the SQL query to create the table.
+        db_operation.create_table(rpt_data_tools_trends_query)
+
+    def create_render_rpt_weekly_company_job_vacancies_table(db_operation):
+        """
+        Create a specified schema and a table within that schema in the 'render_deploy' database.
+
+        This function first establishes a connection to the 'render_deploy' database, then creates a 
+        schema named 'remote_reporting_data'. After the schema is successfully created, it creates a 
+        'rpt_weekly_company_job_vacancies' table within this schema if it does not already exist.
+
+        Parameters:
+        - logger (logging.Logger): A Logger object for logging information and errors.
+        """
+        schema_name = "reporting_data"
+
+        # Create the 'rpt_weekly_company_job_vacancies' table within the newly created schema.
+        rpt_weekly_company_job_vacancies_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.rpt_weekly_company_job_vacancies (
+                rank INT,
+                company_name VARCHAR(255),
+                opening_count INT,
+                crawl_date DATE,
+                PRIMARY KEY (company_name, crawl_date)
+            );
+        """
+        # Execute the SQL query to create the table.
+        db_operation.create_table(rpt_weekly_company_job_vacancies_query)
+
+    def create_rpt_job_openings_geograph_table(db_operation):
+        """
+        Create a specified schema and a table within that schema in the 'datawarehouse' database.
+
+        This function first establishes a connection to the 'datawarehouse' database, then creates a 
+        schema named 'reporting_data'. After the schema is successfully created, it creates a 
+        'rpt_job_openings_geograph' table within this schema if it does not already exist.
+
+        Parameters:
+        - logger (logging.Logger): A Logger object for logging information and errors.
+        """
+        schema_name = "reporting_data"
+
+        # Create the 'rpt_job_openings_geograph' table within the newly created schema.
+        rpt_job_openings_geograph_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.rpt_job_openings_geograph (
+                county_name_eng VARCHAR(255),
+                district_name_eng VARCHAR(255),
+                openings_count INT,
+                crawl_date DATE
+            );
+        """
+        # Execute the SQL query to create the table.
+        db_operation.create_table(rpt_job_openings_geograph_query)
+
+    def create_rpt_data_tools_by_data_role_table(db_operation):
+        """
+        Create a specified schema and a table within that schema in the 'datawarehouse' database.
+
+        This function first establishes a connection to the 'datawarehouse' database, then creates a 
+        schema named 'reporting_data'. After the schema is successfully created, it creates a 
+        'rpt_data_tools_by_data_role' table within this schema if it does not already exist.
+
+        Parameters:
+        - logger (logging.Logger): A Logger object for logging information and errors.
+        """
+        schema_name = "reporting_data"
+
+        # Create the 'rpt_data_tools_by_data_role' table within the newly created schema.
+        rpt_data_tools_by_data_role_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.rpt_data_tools_by_data_role (
+                data_role VARCHAR(255),
+                category VARCHAR(255),
+                tool_name VARCHAR(255),
+                count INT,
+                crawl_date DATE
+            );
+        """
+        # Execute the SQL query to create the table.
+        db_operation.create_table(rpt_data_tools_by_data_role_query)
+
+    def create_rpt_data_role_by_edu_table(db_operation):
+        """
+        Create a specified schema and a table within that schema in the 'datawarehouse' database.
+
+        This function first establishes a connection to the 'datawarehouse' database, then creates a 
+        schema named 'reporting_data'. After the schema is successfully created, it creates a 
+        'rpt_data_role_by_edu' table within this schema if it does not already exist.
+
+        Parameters:
+        - logger (logging.Logger): A Logger object for logging information and errors.
+        """
+        schema_name = "reporting_data"
+
+        # Create the 'rpt_data_role_by_edu' table within the newly created schema.
+        rpt_data_role_by_edu_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.rpt_data_role_by_edu (
+                data_role VARCHAR(255),
+                degree VARCHAR(255),
+                count INT,
+                crawl_date DATE,
+                PRIMARY KEY (data_role, degree, crawl_date)
+            );
+        """
+        # Execute the SQL query to create the table.
+        db_operation.create_table(rpt_data_role_by_edu_query)
+
+    def create_er_district_table(db_operation):
+        """
+        Create a specified schema and a table within that schema in the 'datawarehouse' database.
+
+        This function first establishes a connection to the 'datawarehouse' database, then creates a 
+        schema named 'modeling_data'. After the schema is successfully created, it creates a 
+        'er_district' table within this schema if it does not already exist.
+
+        Parameters:
+        - logger (logging.Logger): A Logger object for logging information and errors.
+        """
+        schema_name = "modeling_data"
+
+        # Create the 'rpt_data_role_by_edu' table within the newly created schema.
+        er_district_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.er_district (
+                district_id VARCHAR(255) PRIMARY KEY ,
+                district_name_ch VARCHAR(255),
+                district_name_eng VARCHAR(255),
+                county VARCHAR(255)
+            );
+        """
+        # Execute the SQL query to create the table.
+        db_operation.create_table(er_district_query)
+
+    def create_er_county_table(db_operation):
+        """
+        Create a specified schema and a table within that schema in the 'datawarehouse' database.
+
+        This function first establishes a connection to the 'datawarehouse' database, then creates a 
+        schema named 'modeling_data'. After the schema is successfully created, it creates a 
+        'er_county' table within this schema if it does not already exist.
+
+        Parameters:
+        - logger (logging.Logger): A Logger object for logging information and errors.
+        """
+        schema_name = "modeling_data"
+
+        # Create the 'rpt_data_role_by_edu' table within the newly created schema.
+        er_county_query = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.er_county (
+                county_id VARCHAR(255) PRIMARY KEY ,
+                county_name_ch VARCHAR(255),
+                county_name_eng VARCHAR(255)
+            );
+        """
+        # Execute the SQL query to create the table.
+        db_operation.create_table(er_county_query)

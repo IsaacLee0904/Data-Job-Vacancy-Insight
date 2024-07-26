@@ -16,7 +16,7 @@ def connect_to_database(logger):
     Establish a connection to the database and return the connector and operation objects.
     """
     connector = DatabaseConnector(logger)
-    connection = connector.connect_to_db('datawarehouse')
+    connection = connector.connect_to_db('datawarehouse') # need to change while deploy
     db_operation = DatabaseOperation(connection, logger)
     logger.info("Connected to the database successfully.")
     return connection, db_operation
