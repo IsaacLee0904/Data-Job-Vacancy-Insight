@@ -23,7 +23,7 @@ RUN ln -fs /usr/share/zoneinfo/Asia/Taipei /etc/localtime && dpkg-reconfigure -f
 COPY . .
 
 # Make port 8080 available to the world outside this container
-EXPOSE 9100
+EXPOSE 8080
 
 # Define an environment variable
 ENV NAME JobVacancyInsight
