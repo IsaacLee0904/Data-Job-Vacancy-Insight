@@ -208,7 +208,7 @@ def page_content():
 layout = html.Div(
     children=[
         sidebar(),
-        # page_content()
+        page_content()
     ]
 )
 
