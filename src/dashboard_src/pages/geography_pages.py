@@ -192,10 +192,7 @@ def page_content():
                                     children=[
                                         html.Div(
                                             className="dropdowns",
-                                            children=[                                            
-                                                # html.P("Job Openings Across Taiwan Regions", className="tw-geo-title"),
-                                                # html.P("A Detailed Analysis of Job Availability in Different Counties and Cities", className="tw-geo-sub-title"),
-                                                # dcc.Graph(figure=taiwan_openings_map, className="geo-taiwan-map"),
+                                            children=[                                                                                     
                                                 html.P("Job Opportunities in Taiwan's Six Major Cities", className="major-city-title"),
                                                 html.P("A Close Examination of Job Availability in the Six Leading Cities", className="major-city-sub-title"),
                                                 dcc.Graph(figure=six_major_city_openings_table, className="six-major-city-table"),

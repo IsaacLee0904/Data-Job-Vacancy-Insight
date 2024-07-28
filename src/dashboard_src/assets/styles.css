@@ -1560,7 +1560,7 @@ Copy code .page .separator,
 .page .major-city-title {
   position: absolute;
   top: 10px;
-  left: 540px;
+  left: -10px;
   font-family: "Poppins", Helvetica;
   font-weight: 400;
   color: #000000;
@@ -1574,7 +1574,7 @@ Copy code .page .separator,
   top: 40px;
   position: absolute;
   width: 420px;
-  left: 540px;
+  left: -10px;
   opacity: 0.5;
   font-family: "Poppins", Helvetica;
   font-weight: 400;
@@ -1588,7 +1588,7 @@ Copy code .page .separator,
   width: 100%;
   height: 50%;
   margin-top: 27px;
-  margin-left: 530px;
+  margin-left: -10px;
   position: absolute;
   top: 50px;
   left: 10px;
