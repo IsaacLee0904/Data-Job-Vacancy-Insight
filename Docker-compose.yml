@@ -8,19 +8,19 @@ services:
     environment:
       NAME: JobVacancyInsight
     depends_on:
-      - selenium
+      - datawarehouse
     volumes:
       - .:/app
     networks:
       - graynet
     command: tail -f /dev/null
-
-  selenium:
-    image: selenium/standalone-chrome
-    ports:
-      - "4444:4444"
-    networks:
-      - graynet
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu, utility]
 
   datawarehouse:
     image: postgres:13
@@ -42,4 +42,3 @@ networks:
 
 volumes:
   datawarehouse_data:
-  datamart_data:

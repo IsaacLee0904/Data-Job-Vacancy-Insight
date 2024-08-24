@@ -1,9 +1,17 @@
 import torch
 
 def check_device_availability(logger, os_type):
+    """
+    Check the availability of GPU or MPS devices based on the operating system.
+    
+    Args:
+        logger: Logger object for logging information.
+        os_type (str): The type of operating system ('windows' or 'mac').
+    """
     print("Checking device availability...")
     
     if os_type.lower() == 'windows':
+        # Check for CUDA GPU availability on Windows
         if torch.cuda.is_available():
             print("GPU is available")
             num_gpus = torch.cuda.device_count()
@@ -23,6 +31,7 @@ def check_device_availability(logger, os_type):
         logger.info(f"PyTorch version: {torch.__version__}")
     
     elif os_type.lower() == 'mac':
+        # Check for MPS (Metal Performance Shaders) availability on Mac
         if torch.backends.mps.is_available():
             print("MPS is available")
         else:
@@ -35,5 +44,6 @@ def check_device_availability(logger, os_type):
         logger.info(f"PyTorch version: {torch.__version__}")
 
     else:
+        # Handle unsupported operating systems
         print("Unsupported operating system")
         logger.error("Unsupported operating system")
